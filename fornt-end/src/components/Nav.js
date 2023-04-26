@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Nav = () => {
+  const auth = localStorage.getItem('user');
   return (
     <div>
       <ul className="nav-ul">
@@ -23,11 +24,12 @@ const Nav = () => {
         </li>
         <li>
           {" "}
-          <Link to="/logout">Log Out</Link>
+          
         </li>
         <li>
           {" "}
-          <Link to="/signup">Sign Up</Link>
+          { auth ?<Link to="/logout">Log Out</Link>:
+          <Link to="/signup">Sign Up</Link>}
         </li>
       </ul>
     </div>
