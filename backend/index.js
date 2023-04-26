@@ -8,7 +8,9 @@ require('./db/config');
 
 const User = require("./db/users");
 const app = express();
+const cors = require("cors");
 app.use(express.json());
+app.use(cors());
 
 app.post("/register",async (req,resp)=> {
 
@@ -16,7 +18,7 @@ app.post("/register",async (req,resp)=> {
     console.log(user);
     // return "sucess"
     let result = await user.save();
-    resp.send("result")
+    resp.send(result)
 })
 
 // app.listen(5000);
