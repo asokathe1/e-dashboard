@@ -1,8 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Nav = () => {
   const auth = localStorage.getItem('user');
+  const navigate =useNavigate();
+const logout= () => {
+  console.warn ("apple");
+  localStorage.clear();
+  navigate('./signup')
+}
+
   return (
     <div>
       <ul className="nav-ul">
@@ -28,7 +35,7 @@ const Nav = () => {
         </li>
         <li>
           {" "}
-          { auth ?<Link to="/logout">Log Out</Link>:
+          { auth ?<Link onClick={logout} to="/logout">Log Out</Link>:
           <Link to="/signup">Sign Up</Link>}
         </li>
       </ul>
