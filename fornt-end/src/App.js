@@ -2,6 +2,7 @@ import "./App.css";
 import Footer from "./components/Footer";
 import Nav from "./components/Nav";
 import Signup from "./components/Signup";
+import Login from './components/Login'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PrivateComponent from "./components/PrivateComponent";
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/logout" element={<h1>Log out</h1>} />
           </Route> 
           <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
 
@@ -30,3 +32,4 @@ function App() {
 }
 
 export default App;
+
