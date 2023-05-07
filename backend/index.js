@@ -5,6 +5,7 @@ require('./db/config');
 //   });
 
 const User = require("./db/users");
+const Product = require("./db/Products");
 const app = express();
 const cors = require("cors");
 app.use(express.json());
@@ -36,10 +37,41 @@ app.post("/login", async(req,resp)=> {
  
 })
 
+//  Product Api Intergration 
+
+app.post("/add-product",async (req,resp)=> {
+
+  let product = new Product(req.body); 
+  console.log(product);
+  // return "sucess"
+  let result = await product.save();
+  resp.send(result)
+})
+
+
+//  Product Api get 
+
+app.get("/products",async (req,resp)=> {
+
+  let products = await Product.find();
+  if(products.length>0){
+    resp.send(products)
+      }
+      else {" no products Found"}
+})
+
+app.delete("/products/:id",async (req,resp)=> {
+
+  let id = req.params.id;
+  // resp.send(req.params.id);
+  const result = await Product.deleteOne({_id:id})
+  resp.send(result);
+  });
+
 // app.listen(5000);
 const port = 5000;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });
 // throw new Error('An error occurred');
 
