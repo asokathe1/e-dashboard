@@ -6,6 +6,7 @@ const Nav = () => {
   const navigate = useNavigate();
   const logout = () => {
     console.warn("apple");
+    console.log(localStorage.getItem("user"));
     localStorage.clear();
     navigate("./signup");
   };
@@ -33,7 +34,8 @@ const Nav = () => {
           <li>
             {" "}
             <Link onClick={logout} to="/logout">
-              Log Out ({JSON.parse(auth).name})
+              Log Out 
+             ({JSON.parse(auth).name})
             </Link>
           </li>
         </ul>

@@ -6,6 +6,8 @@ require('./db/config');
 
 const User = require("./db/users");
 const Product = require("./db/Products");
+const JWT = require('jsonwebtoken');
+const jwtkey = 'e-com';
 const app = express();
 const cors = require("cors");
 app.use(express.json());
@@ -18,18 +20,29 @@ app.post("/register",async (req,resp)=> {
     let result = await user.save();
     result= result.toObject();
     delete result.password;
-    resp.send(result)
+    if(user){
+      JWT.sign({result},jwtkey,{expiresIn:"1h"},(err,token) =>{
+        if(err){
+          resp.send({result:"something went wrong"})
+        }
+      resp.send({result,auth:token})
+      })
+      
+    }
 })
 
 app.post("/login", async(req,resp)=> {
-  // console.log(resp.body);
 
-   
-
- if(req.body.password && req.body.email){
+  if(req.body.password && req.body.email){
   let user = await User.findOne(req.body).select("-password");
   if(user){
-    resp.send(user)
+    JWT.sign({user},jwtkey,{expiresIn:"1h"},(err,token) =>{
+      if(err){
+        resp.send({result:"something went wrong"})
+      }
+    resp.send({user,auth:token})
+    })
+    
   }
   else  {resp.send("no user found") }
  }
@@ -60,13 +73,62 @@ app.get("/products",async (req,resp)=> {
       else {" no products Found"}
 })
 
+// Product Api for Delete
 app.delete("/products/:id",async (req,resp)=> {
 
   let id = req.params.id;
-  // resp.send(req.params.id);
   const result = await Product.deleteOne({_id:id})
   resp.send(result);
   });
+// Product Api for Update 
+app.get("/products/:id",async(req,resp)=>
+{       
+    let id = req.params.id;
+      let result = await Product.findOne({_id:id})
+      if(result)
+      {
+        resp.send(result)
+      }
+      else{
+        resp.send("no record found")
+      }
+        });
+
+app.put("/products/:id", async (req,resp) => {
+
+    let result = await Product.updateOne(
+      {_id:req.params.id},
+      {
+        $set : req.body
+      }
+    )
+    resp.send(result);
+
+})        
+
+
+
+// Product Api for Search
+
+app.get("/search/:key",async (req,resp)=>{
+
+  let result = await Product.find({
+
+    "$or":[
+      {name:{$regex:req.params.key}},
+      {price:{$regex:req.params.key}},
+      {category:{$regex:req.params.key}},
+      {brand:{$regex:req.params.key}}
+    ]
+  });
+  await resp.send(result)
+})
+
+// JWT Token Authentication Api
+
+
+
+
 
 // app.listen(5000);
 const port = 5000;

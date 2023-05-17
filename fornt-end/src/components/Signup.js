@@ -26,12 +26,14 @@ const Signup = () => {
       headers: {'Content-Type':'application/json'},
             
     })
-    let fresult = await result.json()
-    console.warn(fresult);
-    localStorage.setItem("user",JSON.stringify(fresult));
-    if(fresult){
-      navigate('/')
-    }
+    result = await result.json()
+    console.warn(result);
+    localStorage.setItem("user",JSON.stringify(result.result));
+    localStorage.setItem("token",JSON.stringify(result.auth));
+   navigate('/') 
+  //  if(result){
+      
+  //   }
     
   };
 

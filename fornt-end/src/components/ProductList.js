@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,9 @@ const ProductList = () => {
   const getProducts = async () => {
     let result = await fetch("http://localhost:5000/products", {
       method: "Get",
+      headers:{
+        authorization:localStorage.getItem('token')
+      }
     });
     result = await result.json();
     setProducts(result);
@@ -29,9 +33,29 @@ const ProductList = () => {
     }
   };
 
+  const searchHandle = async(event) =>{
+   let key = event.target.value; 
+   if(key){     
+    let result = await fetch(`http://localhost:5000/search/${key}`)
+    result= await result.json();
+   
+    if(result){
+      // result.toLocaleLowerCase()
+      setProducts(result)
+    }
+    else {
+      getProducts()
+    }
+
+    }
+
+
+  }
+
   return (
     <div className="product-list">
       <h1> Product List</h1>
+      <input type="text" placeholder="Serach Product" className="search-product" onChange={searchHandle} /> 
       <ul>
         <li>S.no</li>
         <li>Name</li>
@@ -40,7 +64,9 @@ const ProductList = () => {
         <li>Brand</li>
         <li>Action</li>
       </ul>
-      {products.map((item, index) => (
+      {
+      
+      products.length>0 ? products.map((item, index) => (
         <ul key={index}>
           <li>{index + 1}</li>
           <li>{item.name}</li>
@@ -51,9 +77,13 @@ const ProductList = () => {
             <button className="" onClick={() => delProduct(item._id)}>
               delete
             </button>
+            <button>
+              <Link to={"/update/" + item._id}>update</Link>
+            </button>
           </li>
         </ul>
-      ))}
+      )
+      ):<h1>no record found</h1>}
     </div>
   );
 };

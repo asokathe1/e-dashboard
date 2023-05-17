@@ -46,6 +46,14 @@
   display: inline-block;
 }
 
+.search-product {
+  width: 400px;
+  margin: 20px;
+  height: 40px;
+  border: 1px solid skyblue;
+  padding-left: 20px;
+}
+
 
 
 @media (prefers-reduced-motion: no-preference) {
