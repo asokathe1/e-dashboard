@@ -15,7 +15,12 @@ const UpdateProduct = () => {
     getProductDetails();
   }, []);
   const getProductDetails = async () => {
-    let result = await fetch(`http://localhost:5000/products/${params.id}`);
+    let result = await fetch(`http://localhost:5000/products/${params.id}`,{
+      method: "Get",
+      headers:{
+        authorization:`${JSON.parse(localStorage.getItem('token'))}`
+      }
+    });
     result = await result.json();
     console.log(result);
     setName(result.name);
@@ -27,7 +32,9 @@ const UpdateProduct = () => {
   const updateProduct = async () => {
     console.log(name, price, category, brand);
     let headers = new Headers();
-    headers.set("Content-type", "application/json");
+    headers.set("Content-type", "application/json")
+    headers.set("authorization", `${JSON.parse(localStorage.getItem('token'))}`)
+    console.log(headers);
     let result = await fetch(`http://localhost:5000/products/${params.id}`, {
       method: "Put",
       body: JSON.stringify({ name, price, category, brand }),

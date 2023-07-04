@@ -52,7 +52,7 @@ app.post("/login", async(req,resp)=> {
 
 //  Product Api Intergration 
 
-app.post("/add-product",async (req,resp)=> {
+app.post("/add-product",verifyToken,async (req,resp)=> {
 
   let product = new Product(req.body); 
   console.log(product);
@@ -64,7 +64,7 @@ app.post("/add-product",async (req,resp)=> {
 
 //  Product Api get 
 
-app.get("/products",async (req,resp)=> {
+app.get("/products",verifyToken,async (req,resp)=> {
 
   let products = await Product.find();
   if(products.length>0){
@@ -74,14 +74,14 @@ app.get("/products",async (req,resp)=> {
 })
 
 // Product Api for Delete
-app.delete("/products/:id",async (req,resp)=> {
+app.delete("/products/:id",verifyToken,async (req,resp)=> {
 
   let id = req.params.id;
   const result = await Product.deleteOne({_id:id})
   resp.send(result);
   });
 // Product Api for Update 
-app.get("/products/:id",async(req,resp)=>
+app.get("/products/:id",verifyToken,async(req,resp)=>
 {       
     let id = req.params.id;
       let result = await Product.findOne({_id:id})
@@ -94,7 +94,7 @@ app.get("/products/:id",async(req,resp)=>
       }
         });
 
-app.put("/products/:id", async (req,resp) => {
+app.put("/products/:id",verifyToken, async (req,resp) => {
 
     let result = await Product.updateOne(
       {_id:req.params.id},
@@ -110,7 +110,7 @@ app.put("/products/:id", async (req,resp) => {
 
 // Product Api for Search
 
-app.get("/search/:key",async (req,resp)=>{
+app.get("/search/:key",verifyToken, async (req,resp)=>{
 
   let result = await Product.find({
 
@@ -125,6 +125,28 @@ app.get("/search/:key",async (req,resp)=>{
 })
 
 // JWT Token Authentication Api
+
+function verifyToken(req,resp,next){
+
+  let token = req.headers['authorization']
+  if(token){
+            console.log("if wala ",token)
+        // token = token.split('')[1]
+        JWT.verify(token,jwtkey, (err,valid)=>{
+          if(err){
+            resp.status(401).send({result: "Please provide valid token"})
+
+          }else {
+                next()
+          }
+        })
+  } else{
+        resp.status(403).send("Please send token with Header")
+  }
+  console.log("middleware call",token)
+  
+
+}
 
 
 

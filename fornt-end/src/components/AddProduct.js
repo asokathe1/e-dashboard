@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const [name, setName] = useState("");
@@ -7,6 +8,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [error, setError] = useState("false");
+  const navigate =useNavigate()
 
   const addProduct = async () => {
     console.log(!name);
@@ -20,6 +22,7 @@ const AddProduct = () => {
     console.log(userid);
     let headers = new Headers();
     headers.set("Content-type", "application/json");
+    headers.set("authorization", `${JSON.parse(localStorage.getItem('token'))}`);
     let result = await fetch("http://localhost:5000/add-product", {
       method: "Post",
       body: JSON.stringify({ name, price, userid, category, brand }),
@@ -31,6 +34,7 @@ const AddProduct = () => {
     });
     // console.log(result);
     let fresult = await result.json();
+    navigate("/")
     console.log(fresult);
   };
 
